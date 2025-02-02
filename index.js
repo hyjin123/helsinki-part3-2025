@@ -59,6 +59,21 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
   const person = request.body;
+
+  if (!person.name || !person.number) {
+    return response.status(400).json({
+      error: "name or number is missing"
+    });
+  }
+
+  const duplicate = persons.find(p => p.name.toLowerCase() === person.name.toLowerCase());
+
+  if (duplicate) {
+    return response.status(400).json({
+      error: "name already exists in the phonebook"
+    });
+  }
+
   const generateId = String(Math.floor(Math.random() * 2000));
 
   // add the randomly generated id to the person object
