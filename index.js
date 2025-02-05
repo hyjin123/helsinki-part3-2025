@@ -57,12 +57,9 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/api/persons/:id', (request, response) => {
   const id = request.params.id;
-  const person = persons.find(person => person.id === id);
-  if (person) {
+  Person.findById(id).then(person => {
     response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  });
 });
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -90,14 +87,12 @@ app.post('/api/persons', (request, response) => {
     });
   }
 
-  const generateId = String(Math.floor(Math.random() * 2000));
+  const newPerson = new Person(person);
 
-  // add the randomly generated id to the person object
-  person.id = generateId;
-  // add the new person to the persons list
-  persons = persons.concat(person);
-  // send the new person data to the front end
-  response.json(person);
+  newPerson.save().then(savedPerson => {
+    response.json(savedPerson);
+  });
+
 });
 
 const PORT = process.env.PORT || 3001;
