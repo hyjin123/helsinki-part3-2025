@@ -69,6 +69,17 @@ app.get('/api/persons/:id', (request, response) => {
     .catch(error => next(error));
 });
 
+app.put('/api/persons/:id', (request, response) => {
+  const id = request.params.id;
+  const body = request.body;
+
+  Person.findByIdAndUpdate(id, body, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson);
+    })
+    .catch(error => next(error));
+});
+
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id;
   // updated the database list
