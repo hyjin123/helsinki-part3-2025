@@ -15,29 +15,6 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 app.use(cors());
 app.use(express.static('dist'));
 
-let persons = [
-  {
-    "id": "1",
-    "name": "Arto Hellas",
-    "number": "040-123456"
-  },
-  {
-    "id": "2",
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523"
-  },
-  {
-    "id": "3",
-    "name": "Dan Abramov",
-    "number": "12-43-234345"
-  },
-  {
-    "id": "4",
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122"
-  }
-];
-
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>');
 });
@@ -46,7 +23,13 @@ app.get('/info', (request, response) => {
   const date = new Date();
   const day = date.toDateString();
   const time = date.toLocaleTimeString();
-  response.send(`<p>Phonebook has info for ${persons.length} people </br> ${day} ${time}</p>`);
+
+  Person.find({}).then(people => {
+    response.send(`<p>Phonebook has info for ${people.length} people </br> ${day} ${time}</p>`);
+  })
+    .catch(error => next(error));
+
+
 });
 
 app.get('/api/persons', (request, response) => {
@@ -96,14 +79,6 @@ app.post('/api/persons', (request, response) => {
   if (!person.name || !person.number) {
     return response.status(400).json({
       error: "name or number is missing"
-    });
-  }
-
-  const duplicate = persons.find(p => p.name.toLowerCase() === person.name.toLowerCase());
-
-  if (duplicate) {
-    return response.status(400).json({
-      error: "name already exists in the phonebook"
     });
   }
 
