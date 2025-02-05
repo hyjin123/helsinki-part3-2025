@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd ../helsinki-part2-2025/phonebook && npm run build && cp -r dist ../../helsinki-part3-2025",
     "deploy": "fly deploy",
-    "deploy:full": "npm run build:ui && npm run deploy",    
+    "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs"
   },
   "author": "",
@@ -17,6 +17,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "mongodb": "^6.13.0",
+    "mongoose": "^8.9.7",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
