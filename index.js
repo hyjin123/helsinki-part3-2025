@@ -39,7 +39,7 @@ app.get('/api/persons', (request, response) => {
     .catch(error => next(error));
 });
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   const id = request.params.id;
   Person.findById(id)
     .then(person => {
@@ -56,7 +56,7 @@ app.put('/api/persons/:id', (request, response) => {
   const id = request.params.id;
   const body = request.body;
 
-  Person.findByIdAndUpdate(id, body, { new: true })
+  Person.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: "query" })
     .then(updatedPerson => {
       response.json(updatedPerson);
     })
@@ -72,7 +72,7 @@ app.delete('/api/persons/:id', (request, response) => {
     .catch(error => next(error));
 });
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const person = request.body;
 
   console.log("this is the request body", person);
@@ -84,11 +84,13 @@ app.post('/api/persons', (request, response) => {
 
   const newPerson = new Person(person);
 
-  newPerson.save().then(savedPerson => {
-    response.json(savedPerson);
-  })
-    .catch(error => next(error));
-
+  newPerson.save()
+    .then(savedPerson => {
+      response.json(savedPerson);
+    })
+    .catch(error => {
+      return next(error);
+    });
 });
 
 //below are error handler middlewares
@@ -100,10 +102,11 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message);
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
