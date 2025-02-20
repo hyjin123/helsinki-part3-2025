@@ -9,7 +9,8 @@
     "build:ui": "rm -rf dist && cd ../helsinki-part2-2025/phonebook && npm run build && cp -r dist ../../helsinki-part3-2025",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -23,10 +24,11 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.19.0",
+    "@eslint/js": "^9.20.0",
     "@flydotio/dockerfile": "^0.7.4",
-    "eslint": "^9.19.0",
-    "globals": "^15.14.0",
+    "@stylistic/eslint-plugin-js": "^4.0.1",
+    "eslint": "^9.20.1",
+    "globals": "^15.15.0",
     "nodemon": "^3.1.9"
   }
 }
